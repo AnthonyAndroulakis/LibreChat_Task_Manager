@@ -806,7 +806,6 @@ class BaseClient {
       user,
     );
     this.savedMessageIds.add(responseMessage.messageId);
-    delete responseMessage.tokenCount;
     return responseMessage;
   }
 
