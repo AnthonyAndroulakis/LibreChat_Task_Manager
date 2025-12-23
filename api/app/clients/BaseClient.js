@@ -747,8 +747,6 @@ class BaseClient {
     ${ticktickData}
     </ticktick_task_list>
     \n`;
-
-    const customInstruction = process.env.CUSTOM_INSTRUCTION || '';
     
     const instructionSection = `
     Task:
@@ -764,10 +762,6 @@ class BaseClient {
 
     Task List Format:
     ${customFormat}
-
-    <user_instruction>
-    ${customInstruction}
-    </user_instruction>
     `;
 
     const fullConstructedPrompt = `${timeSection}${contextSection}${instructionSection}\n\nUser Input:\n${payload[payload.length-1].content}`;
