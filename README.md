@@ -43,7 +43,7 @@ Bash
 
 ```
 git clone https://github.com/AnthonyAndroulakis/LibreChat_Task_Manager.git
-cd LibreChat
+cd LibreChat_Task_Manager
 
 ```
 
