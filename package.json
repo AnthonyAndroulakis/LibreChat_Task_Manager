@@ -153,5 +153,10 @@
       "admin/",
       "packages/"
     ]
+  },
+  "dependencies": {
+    "googleapis": "^166.0.0",
+    "jsdom": "^27.2.0",
+    "luxon": "^3.7.2"
   }
 }

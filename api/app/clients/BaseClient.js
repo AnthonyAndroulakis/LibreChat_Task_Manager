@@ -27,6 +27,18 @@ const countTokens = require('~/server/utils/countTokens');
 const { getFiles } = require('~/models/File');
 const TextStream = require('./TextStream');
 
+const listEmails = require('~/customUtils/gmailFetch');
+const listCalendar = require('~/customUtils/calendarFetch');
+const { getAllTasksMd, createTasksBulk } = require('~/customUtils/ticktickUtils');
+const { text } = require('stream/consumers');
+require('dotenv').config();
+
+const fs = require('fs/promises');
+
+const getFileData = async (filePath) => {
+  return fs.readFile(filePath, 'utf8');
+};
+
 class BaseClient {
   constructor(apiKey, options = {}) {
     this.apiKey = apiKey;
@@ -690,6 +702,78 @@ class BaseClient {
       });
     }
 
+    const estDate = new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+      dateStyle: "full",
+      timeStyle: "short"
+    });
+
+    const timeSection = `Current Local Time: ${estDate}\n\n`;
+
+    const personalInfo = process.env.PERSONAL_INFO;
+    
+    const [calendarData, emailData, ticktickData] = await Promise.all([
+      listCalendar().catch((err) => `[Calendar Error: ${err.message}]`),
+      listEmails().catch((err) => `[Email Error: ${err.message}]`),
+      getAllTasksMd().catch((err) => `[TickTick Error: ${err.message}]`)
+    ]);
+
+    const customFormat = `
+    ✈️ New York Trip
+      [ ] <2025-12-24 9:00 pm> Check in to flight and verify plan to get to the airport (#15m)
+      [ ] <2025-12-25 11:00 am> Fly to New York
+    💰 Work
+      [ ] <2025-12-23 10:00 am> Check mail one last time for Invoice (#5m)
+      [ ] <2025-12-23 11:00 am> Email John Doe before leaving town (#5m)
+      [ ] <2025-12-24 11:00 am> Ask boss about schedule (#5m)
+      [ ] <2025-12-25 9:00 am> Submit PR on github for new project (#25m)
+    `;
+
+    const contextSection = `
+    Context:
+    <personal_context>
+    ${personalInfo || ''}
+    </personal_context>
+
+    <calendar desc="next 30 days">
+    ${calendarData}
+    </calendar>
+
+    <emails desc="past 7 days">
+    ${emailData}
+    </emails>
+
+    <ticktick_task_list>
+    ${ticktickData}
+    </ticktick_task_list>
+    \n`;
+
+    const customInstruction = process.env.CUSTOM_INSTRUCTION || '';
+    
+    const instructionSection = `
+    Task:
+    - Respond to the user's input based on the context provided.
+    - Write a super concise description (ideally 2-7 words) for any task suggestions.
+    - Ensure advice is ADHD-friendly: clear, specific, and actionable.
+    - Focus on one clear objective per task.
+    - Write out tasks for the day and for the upcoming 7 days.
+    - Try to fit in as many tasks as possible without being overwhelming.
+    
+    Reasoning step:
+    - Take a deep breath and think step-by-step about the context.
+
+    Task List Format:
+    ${customFormat}
+
+    <user_instruction>
+    ${customInstruction}
+    </user_instruction>
+    `;
+
+    const fullConstructedPrompt = `${timeSection}${contextSection}${instructionSection}\n\nUser Input:\n${payload[payload.length-1].content}`;
+    
+    payload[payload.length-1].content = fullConstructedPrompt;
+
     const { completion, metadata } = await this.sendCompletion(payload, opts);
     if (this.abortController) {
       this.abortController.requestCompleted = true;
@@ -793,6 +877,14 @@ class BaseClient {
         logger.error('[BaseClient] Error mapping attachments for conversation', error);
       }
     }
+
+    if (Array.isArray(responseMessage.content)) {
+      const textContent = responseMessage.content.find(item => item.type === 'text')?.text;
+      if (textContent && textContent.length > 0) {
+        createTasksBulk(textContent);
+      }
+    }
+    
 
     responseMessage.databasePromise = this.saveMessageToDatabase(
       responseMessage,
