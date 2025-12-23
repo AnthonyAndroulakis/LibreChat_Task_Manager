@@ -34,10 +34,10 @@ async function summarizeEmail(text) {
 
 function setupAuth() {
   const clientStr = process.env.GOOGLE_CLIENT_JSON;
-  const tokenStr = process.env.GOOGLE_EMAIL_TOKEN_JSON;
+  const tokenStr = process.env.GOOGLE_TOKEN_JSON;
 
   if (!clientStr || !tokenStr) {
-    throw new Error('Missing GOOGLE_CLIENT_JSON or GOOGLE_EMAIL_TOKEN_JSON in .env');
+    throw new Error('Missing GOOGLE_CLIENT_JSON or GOOGLE_TOKEN_JSON in .env');
   }
 
   const clientData = JSON.parse(clientStr);

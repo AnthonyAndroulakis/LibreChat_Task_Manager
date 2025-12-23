@@ -14,10 +14,10 @@ function getAuthClient() {
   const clientData = JSON.parse(process.env.GOOGLE_CLIENT_JSON);
   const keys = clientData.installed || clientData.web;
 
-  if (!process.env.GOOGLE_EMAIL_TOKEN_JSON) {
-    throw new Error("Missing GOOGLE_EMAIL_TOKEN_JSON environment variable.");
+  if (!process.env.GOOGLE_TOKEN_JSON) {
+    throw new Error("Missing GOOGLE_TOKEN_JSON environment variable.");
   }
-  const tokenData = JSON.parse(process.env.GOOGLE_EMAIL_TOKEN_JSON);
+  const tokenData = JSON.parse(process.env.GOOGLE_TOKEN_JSON);
 
   const oAuth2Client = new google.auth.OAuth2(
     keys.client_id,
