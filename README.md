@@ -55,7 +55,6 @@ Bash
 ```
 npm ci
 cd api && npm install
-
 ```
 
 ### Google API Setup
@@ -111,7 +110,6 @@ SEARCH=false
 # STRICT SECURITY: Do not allow others to register accounts
 ALLOW_REGISTRATION=false
 ALLOW_SOCIAL_REGISTRATION=false
-
 ```
 
 ### Google Integration
@@ -129,7 +127,6 @@ GOOGLE_CLIENT_JSON={"installed":{"client_id":"...","project_id":"...","auth_uri"
 
 # Google User Token (content of the generated token.json with refresh_token)
 GOOGLE_EMAIL_TOKEN_JSON={"access_token":"...","refresh_token":"...","scope":"...","token_type":"Bearer","expiry_date":1700000000000}
-
 ```
 
 ### TickTick Integration
@@ -142,7 +139,6 @@ TICKTICK_TOKEN=your_ticktick_cookie_value
 
 # The device ID found in browser network tools
 TICKTICK_DEVICE_ID=your_device_id_value
-
 ```
 
 ### AI Personalization
@@ -157,7 +153,6 @@ GOOGLE_TITLE_MODEL=gemini-2.0-flash-lite
 # Personal Context Injection
 # This text is added to the system prompt. Include your goals, bio, etc
 PERSONAL_INFO=""
-
 ```
 
 ----------
@@ -187,5 +182,3 @@ Access the site at `http://localhost:3080`.
         
 2.  **AI Processing**: The AI receives your prompt + the retrieved context + your `PERSONAL_INFO`.
 3. **Task Creation**: The app creates and imports TickTick tasks for the next 7 days.
-    
-
