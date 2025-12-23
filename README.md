@@ -2,7 +2,11 @@
 
 # LibreChat Task Manager
 
-This is a customized fork of [LibreChat](https://github.com/danny-avila/LibreChat) designed to function as an automated task manager. It modifies the core client to inject real-time context of your personal life into every conversation and grants the AI the ability to manage TickTick tasks directly.
+This is a customized fork of [LibreChat](https://github.com/danny-avila/LibreChat) designed to function as an free automated task manager. 
+
+It modifies the core client to inject real-time context of your personal life into every conversation and grants the AI the ability to manage TickTick tasks directly.
+
+This does require a bit of setup but all steps are outlined in this readme.
 
 ## Features
 
